@@ -1,6 +1,7 @@
 import pytest
 import mongomock
 from file_flow_common import db
+from datetime import datetime, timedelta
 
 
 @pytest.fixture(autouse=True)
@@ -43,3 +44,14 @@ def test_delete_document():
 
     assert ok is True
     assert db.get_document("images", doc_id) is None
+
+
+def test_delete_older_than_n_days():
+    days = 1
+    old_ts = int((datetime.now() - timedelta(days=days + 1)).timestamp())
+
+    db.insert_document("images", {"base64": "old", "createdAt": old_ts})
+
+    deleted = db.delete_documents_older_than_ts(collection="images", days=days)
+
+    assert deleted == 1
