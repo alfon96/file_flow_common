@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "file-flow-common"
-version = "0.1.0"
+version = "0.2.0"
 description = "Shared database helpers and utils for File Flow project"
 authors = [{ name = "Alfonso Falcone", email = "alfalcone1996@gmail.com" }]
 readme = "README.md"
