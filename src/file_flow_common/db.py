@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 import os
 import uuid
+from datetime import datetime, timedelta
 
 MONGO_URI = os.getenv("MONGO_URI", "")
 DB_NAME = os.getenv("MONGO_DB", "")
@@ -30,6 +31,7 @@ class Mongo:
 # ---- Example CRUD helpers ----
 def insert_document(collection: str, data: dict) -> str:
     data["id"] = str(uuid.uuid4())
+    data["createdAt"] = datetime.now()
     Mongo.get_collection(collection).insert_one(data)
     return data["id"]
 
@@ -47,4 +49,13 @@ def update_document(collection: str, doc_id: str, update: dict) -> bool:
 
 def delete_document(collection: str, doc_id: str) -> bool:
     result = Mongo.get_collection(collection).delete_one({"id": doc_id})
+    return result.deleted_count > 0
+
+
+def delete_documents_older_than_ts(collection: str, days: int = 10) -> bool:
+    cutoff = datetime.now() - timedelta(days=days)
+    cutoff_ts = int(cutoff.timestamp())
+    result = Mongo.get_collection(collection).delete_one(
+        {"createdAt": {"$lt": cutoff_ts}}
+    )
     return result.deleted_count > 0
