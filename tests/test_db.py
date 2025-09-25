@@ -29,6 +29,34 @@ def test_insert_and_get_document():
     assert fetched["base64"] == data["base64"]
 
 
+def test_upsert_document_inserts_and_updates():
+    coll = db.Mongo.get_collection("filtered_images")
+
+    doc_id = "test123"
+
+    # 1. First upsert should insert
+    inserted = db.upsert_document(
+        "filtered_images",
+        doc_id=doc_id,
+        data={"filterA": "imgA"},
+    )
+    assert inserted is True
+    doc = coll.find_one({"id": doc_id})
+    assert doc is not None
+    assert doc["filterA"] == "imgA"
+
+    # 2. Second upsert should update the same document
+    updated = db.upsert_document(
+        "filtered_images",
+        doc_id=doc_id,
+        data={"filterB": "imgB"},
+    )
+    assert updated is True
+    doc = coll.find_one({"id": doc_id})
+    assert doc["filterA"] == "imgA"  # original field remains
+    assert doc["filterB"] == "imgB"  # new field added
+
+
 def test_update_document():
     doc_id = db.insert_document("images", {"base64": "old"})
     ok = db.update_document("images", doc_id, {"base64": "new"})

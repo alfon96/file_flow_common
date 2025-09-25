@@ -28,12 +28,21 @@ class Mongo:
             cls._client = None
 
 
-# ---- Example CRUD helpers ----
 def insert_document(collection: str, data: dict) -> str:
     data["id"] = str(uuid.uuid4())
     data.setdefault("createdAt", datetime.now().timestamp())
     Mongo.get_collection(collection).insert_one(data)
     return data["id"]
+
+
+def upsert_document(collection: str, doc_id: str, data: dict) -> bool:
+    """Insert new doc if not exists, otherwise update fields."""
+    result = Mongo.get_collection(collection).update_one(
+        {"id": doc_id},
+        {"$set": data},
+        upsert=True,
+    )
+    return result.matched_count > 0 or result.upserted_id is not None
 
 
 def get_document(collection: str, doc_id: str) -> dict | None:
