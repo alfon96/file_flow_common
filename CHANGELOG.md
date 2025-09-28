@@ -1,3 +1,13 @@
+## v0.4.1 (2025-09-28)
+
+### Fix
+
+- **ci**: configure git identity before commitizen bump to prevent author identity error in release workflow
+
+### Refactor
+
+- move schema module under file_flow_common package for proper imports
+
 ## v0.4.0 (2025-09-28)
 
 ### Feat
