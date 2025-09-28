@@ -2,7 +2,7 @@ import pytest
 import mongomock
 from file_flow_common import db
 from datetime import datetime, timedelta
-from src.schema.query import DbAccessQuery
+from file_flow_common.schema.query import DbAccessQuery
 
 TEST_QUERY = DbAccessQuery(
     mongo_uri="test_uri",

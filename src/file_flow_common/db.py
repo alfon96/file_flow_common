@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 import uuid
 from datetime import datetime, timedelta
-from src.schema.query import DbAccessQuery
+from file_flow_common.schema.query import DbAccessQuery
 
 
 class Mongo:
